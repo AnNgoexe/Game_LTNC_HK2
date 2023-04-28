@@ -1,0 +1,16 @@
+{
+    "C_Cpp.errorSquiggles": "disabled",
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "c:\\Users\\Admin\\OneDrive\\M�y t�nh\\SDLTest",
+            "binaryPath": "c:\\Users\\Admin\\OneDrive\\M�y t�nh\\SDLTest\\main.exe",
+            "binaryArgs": []
+        }
+    ],
+    "files.associations": {
+        "*.tcc": "cpp",
+        "fstream": "cpp",
+        "functional": "cpp",
+        "regex": "cpp"
+    }
+}
