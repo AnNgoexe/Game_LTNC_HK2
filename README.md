@@ -1,9 +1,11 @@
 # Game_LTNC_HK2
 
 ## GAME INTRODUCTION
-This is my game project based on Google running dinasour but I have added other game features and fuctions to make the game more vivid and interesting. <br/>
-Your task is to reach the highest score by receiving awards while the game character is still alive. <br/>
+_ This is my game project based on Google running dinasour with added other interesting game features and fuctions. <br/>
+_ Using SDL2.0 library , C/C++ <br/>
+
 ## GAME INSTRUCTION
+Your task is to reach the highest score by receiving awards while the game character is still alive. <br/>
 1. When game menu appears, click "Play" button to start or "Instruction" button to read instruction. If you do not want to play, click "Exit" button to exit.
 2. While playing, press button "Space" to avoid danger (bat,stone and cactus) and receive awards (diamond,coin and heart). Besides, click "Pause" button to stop playing 
 for a while and click "Resume" button to continue.
@@ -21,3 +23,7 @@ _ If your score is greater than or equal to 0, you will receive 1 star     <br/>
 5. There are two choices at the end of the game <br/>
 _ Press "Esc" button on the keyboar to exit the game. <br/>
 _ Press "Space" button on the keyboard to play again. <br/>
+
+## GAME MEDIA
+
+## REFERENCE
