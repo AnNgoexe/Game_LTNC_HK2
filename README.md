@@ -1,10 +1,12 @@
 # Game_LTNC_HK2
 
 ## GAME INTRODUCTION
+_ Name: Ngo Quoc An  <br/>
+_ Student ID number: 22026515 <br/>
 _ This is my game project based on Google running dinasour with added other interesting game features and fuctions. <br/>
 _ Using SDL2.0 library , C/C++ <br/>
 
-## GAME INSTRUCTION
+## HOW TO PLAY GAME
 Your task is to reach the highest score by receiving awards while the game character is still alive. <br/>
 1. When game menu appears, click "Play" button to start or "Instruction" button to read instruction. If you do not want to play, click "Exit" button to exit.
 2. While playing, press button "Space" to avoid danger (bat,stone and cactus) and receive awards (diamond,coin and heart). Besides, click "Pause" button to stop playing 
@@ -24,6 +26,19 @@ _ If your score is greater than or equal to 0, you will receive 1 star     <br/>
 _ Press "Esc" button on the keyboar to exit the game. <br/>
 _ Press "Space" button on the keyboard to play again. <br/>
 
-## GAME MEDIA
+## MAIN FUCTIONS
+_ Ltexture - load media <br/>
+_ Game character - movement and animation <br/>
+_ Game threats - movement and animation <br/>
+_ Game awards - movement and animation <br/>
+_ Game buttons - handle with Play, Help, Exit, Pause, Continue button <br/>
+_ Logic game - handle with collision , update score, ... <br/>
+
+## MEDIA SOURCE
+_ Image: Using image mainly from https://fr.pngtree.com/ and https://www.pngwing.com/ then edit. <br/>
+_ Music and sound: Using https://www.y2mate.com/fr498 to convert Youtube video to mp3 file, then use https://convertio.co/vn/mp3-wav/ to convert mp3 to wav <br/>
 
 ## REFERENCE
+_ Instruction: https://lazyfoo.net/ <br/>
+_ Idea: https://github.com/manhhung2111/Dino-run <br/>
+_ Inspiration: https://www.youtube.com/watch?v=5bblnJx5GWk <br/>
