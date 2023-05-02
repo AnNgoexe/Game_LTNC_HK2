@@ -12,18 +12,18 @@ Award::Award(int _type) //Initializes internal variables
 	type = _type;
 	if (type == AWARD_1) //the coin
 	{
-        X = rand() % (SCREEN_WIDTH + AWARD_3_RANGE) + SCREEN_WIDTH*2 ;
-		Y = GROUND - 100 ;
+        X = rand() % AWARD_1_RANGE +  AWARD_1_RANGE + SCREEN_WIDTH ;
+		Y = GROUND - 90 ;
 	}
 	else if (type == AWARD_2) //the diamond
 	{
-		X = rand() % (SCREEN_WIDTH + AWARD_2_RANGE) + SCREEN_WIDTH*2 ;
-		Y = GROUND - 100 ;
+		X = rand() % AWARD_2_RANGE + AWARD_1_RANGE + AWARD_2_RANGE + SCREEN_WIDTH ;
+		Y = GROUND - 150 ;
 	}
 	else if (type == AWARD_3) //the heart
 	{
-		X = rand() % (SCREEN_WIDTH + AWARD_1_RANGE) + SCREEN_WIDTH*2;
-		Y = GROUND - 100;
+		X = AWARD_3_RANGE + SCREEN_WIDTH ;
+		Y = GROUND - 180;
 	}
 	AwardTexture = nullptr;
 }
@@ -78,25 +78,25 @@ void Award::LoadFromFile(std::string path, SDL_Renderer* gRenderer) //loading th
 	AwardTexture = newTexture; //return success
 }
 
-void Award::Move(const int &acceleration , int type) //get the speed of game award
+void Award::Move(int &acceleration , int type) //get the speed of game award
 {
 	X += -(AWARD_SPEED + acceleration); //update position x
 	if (X + MAX_AWARD_WIDTH < 0) //when the award touches the screen to the left
 	{
 		if(type == AWARD_3)
 		{
-			X = rand() % (SCREEN_WIDTH + AWARD_1_RANGE) + SCREEN_WIDTH;
-		    Y = GROUND - 100 ;
+			X = AWARD_3_RANGE + SCREEN_WIDTH ;
+		    Y = GROUND - 180;
 		}
 		else if (type == AWARD_1)
 		{
-			X = rand() % (SCREEN_WIDTH + AWARD_2_RANGE) + SCREEN_WIDTH ;
-		    Y = GROUND - 100;
+			X = rand() % AWARD_1_RANGE +  AWARD_1_RANGE + SCREEN_WIDTH ;
+		    Y = GROUND - 90 ;
 		}
 		else if (type == AWARD_2)
 		{
-			X = (rand() % (SCREEN_WIDTH + AWARD_3_RANGE))*5 + SCREEN_WIDTH ;
-		    Y = GROUND - 100 ;
+			X = rand() % AWARD_2_RANGE + AWARD_1_RANGE + AWARD_2_RANGE + SCREEN_WIDTH ;
+		    Y = GROUND - 150 ;
 		}
 	}
 }
@@ -128,7 +128,7 @@ int Award::GetType() //get the type of award
 	}
 }
 
-int Award::GetSpeed(const int &acceleration) //get the speed of game award
+int Award::GetSpeed(int &acceleration) //get the speed of game award
 {
 	return AWARD_SPEED + acceleration;
 }
@@ -153,7 +153,7 @@ int Award::GetHeight() //get the height of the award
 	return Height;
 }
 
-void Award::Award_Reset()
+void Award::AwardReset() //to make awards disappear when the character receives
 {
 	X  = 0 - SCREEN_WIDTH;
 }

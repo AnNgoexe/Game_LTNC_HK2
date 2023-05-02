@@ -2,9 +2,9 @@
 
 LTexture::LTexture() //Initialize variables
 {
-	mTexture = NULL;
-	mWidth = 0;
-	mHeight = 0;
+	Width = 0;
+	Height = 0;
+	Texture = NULL;
 }
 
 LTexture::~LTexture() //Deallocates memory
@@ -14,26 +14,26 @@ LTexture::~LTexture() //Deallocates memory
 
 void LTexture::Free() //Free texture if it exists
 {
-	if (mTexture != NULL)
+	if (Texture != NULL)
 	{
-		mTexture = NULL;
-		mWidth = 0;
-		mHeight = 0;
+		Width = 0;
+		Height = 0;
+		Texture = NULL;
 	}
 }
 
 void LTexture::setColor( Uint8 red, Uint8 green, Uint8 blue ) //Modulate texture rgb
 { 
-	SDL_SetTextureColorMod( mTexture, red, green, blue );
+	SDL_SetTextureColorMod( Texture, red, green, blue );
 }
 
 void LTexture::setBlendMode( SDL_BlendMode blending ) //Set blending function
 {
-	SDL_SetTextureBlendMode( mTexture, blending );
+	SDL_SetTextureBlendMode( Texture, blending );
 }
 void LTexture::setAlpha( Uint8 alpha ) //Modulate texture alpha
 {
-	SDL_SetTextureAlphaMod( mTexture, alpha );
+	SDL_SetTextureAlphaMod( Texture, alpha );
 }
 
 bool LTexture::LoadFromRenderedText(std::string textureText,TTF_Font *gFont, SDL_Color textColor, SDL_Renderer *gRenderer) //Creates image from font string
@@ -46,19 +46,19 @@ bool LTexture::LoadFromRenderedText(std::string textureText,TTF_Font *gFont, SDL
 	}
 	else
 	{
-		mTexture = SDL_CreateTextureFromSurface(gRenderer, textSurface); //Create texture from surface pixels
-		if (mTexture == NULL) 
+		Texture = SDL_CreateTextureFromSurface(gRenderer, textSurface); //Create texture from surface pixels
+		if (Texture == NULL) 
 		{
 			std::cout << "Unable to create texture from rendered text!" << std::endl;
 		}
 		else
 		{
-			mWidth = textSurface->w; //Get image dimensions
-			mHeight = textSurface->h; //Get image dimensions
+			Width = textSurface->w; //Get image dimensions
+			Height = textSurface->h; //Get image dimensions
 		}
 		SDL_FreeSurface(textSurface); //Get rid of old surface
 	}
-	return mTexture != NULL; //Return success
+	return Texture != NULL; //Return success
 }
 
 bool LTexture::LoadFromFile(std::string path, SDL_Renderer *gRenderer)  //Loads image at specified path
@@ -80,32 +80,32 @@ bool LTexture::LoadFromFile(std::string path, SDL_Renderer *gRenderer)  //Loads 
 		}
 		else
 		{
-			mWidth = loadedSurface->w; //Get image dimensions
-			mHeight = loadedSurface->h; //Get image dimensions
+			Width = loadedSurface->w; //Get image dimensions
+			Height = loadedSurface->h; //Get image dimensions
 		}
 		SDL_FreeSurface(loadedSurface); //Get rid of old loaded surface
 	}
-	mTexture = newTexture; //return success
-	return mTexture != nullptr;
+	Texture = newTexture; //return success
+	return Texture != nullptr;
 }
 
 void LTexture::Render(int x, int y, SDL_Renderer* gRenderer, SDL_Rect* clip) //Renders texture at given point
 {
-	SDL_Rect renderQuad = { x, y, mWidth, mHeight }; //Set rendering space and render to screen
+	SDL_Rect renderQuad = { x, y, Width, Height }; //Set rendering space and render to screen
 	if (clip != nullptr) //Set clip rendering dimensions
 	{
 		renderQuad.w = clip->w;
 		renderQuad.h = clip->h;
 	}
-	SDL_RenderCopy(gRenderer, mTexture, clip, &renderQuad);
+	SDL_RenderCopy(gRenderer, Texture, clip, &renderQuad);
 }
 
 int LTexture::GetWidth() //Gets image dimensions
 {
-	return mWidth;
+	return Width;
 }
 
 int LTexture::GetHeight() //Gets image dimensions
 {
-	return mHeight;
+	return Height;
 }

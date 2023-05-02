@@ -7,9 +7,10 @@ Character::Character() //Initializes the variables
 	status = RUN ;
 }
 
-bool Character::OnGround() //check whether the character is on ground or not
+bool Character::IsOnGround() //check whether the character is on ground or not
 {
-	return posY == GROUND;
+	if(posY == GROUND) return true;
+	else return false ;
 }
 
 void Character::HandleEvent(SDL_Event& e, Mix_Chunk *gJump) //Takes key presses and control events 
@@ -20,7 +21,7 @@ void Character::HandleEvent(SDL_Event& e, Mix_Chunk *gJump) //Takes key presses 
 		{
 			case SDLK_SPACE: //if press the up button
 			{
-				if(OnGround())
+				if(IsOnGround())
 				{
 					Mix_PlayChannel(-1, gJump, 0); // play the sound
 				    status = JUMP; // adjust the character's position

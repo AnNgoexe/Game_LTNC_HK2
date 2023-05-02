@@ -1,7 +1,7 @@
 #include "Frame_Ground_Process.h"
 
 //scrolling the main ground depending on time and speed
-void Render_Scrolling_Ground(int& speed, int acceleration, LTexture gGroundTexture, SDL_Renderer* gRenderer)
+void Scrolling_Ground(int& speed, int acceleration, LTexture gGroundTexture, SDL_Renderer* gRenderer)
 {
 	speed = speed - (GROUND_SPEED + acceleration) ;
 	if (speed < -gGroundTexture.GetWidth())
@@ -43,7 +43,7 @@ void Control_Award_Frame(int& frame)
 }
 
 //scrolling the background depending on time and speed
-void Render_Scrolling_BackGround(int& speed, int acceleration, LTexture gBackGroundTexture, SDL_Renderer* gRenderer)
+void Scrolling_BackGround(int& speed, int acceleration, LTexture gBackGroundTexture, SDL_Renderer* gRenderer)
 {
 	speed = speed - (BACKGROUND_SPEED + acceleration) ;
 	if (speed < -gBackGroundTexture.GetWidth())

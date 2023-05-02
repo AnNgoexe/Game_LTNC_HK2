@@ -69,31 +69,32 @@ SDL_Color textColor = { 255, 55, 40 };
 
 bool Init()  //Starts up SDL and creates window
 {
-	bool success = true;  //Initialization flag
+	bool Init = true;  //Initialization flag
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) //Initialize SDL
 	{
+		Init = false;
 		std::cout << "Can not initialize SDL." << std::endl;
-		success = false;
 	}
 	else
 	{
 		if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1")) //Set texture filtering to linear
 		{
+			Init = false;
 			std::cout << "Warning: Linear texture filtering not enabled!" << std::endl;
 		}
-		gWindow = SDL_CreateWindow("Dinasour in jungle", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN); //Create window
+		gWindow = SDL_CreateWindow("Running dinasour on the beach", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN); //Create window
 		if (gWindow == NULL)
 		{
+			Init = false;
 			std::cout << "Can not create window" << std::endl ;
-			success = false;
 		}
 		else
 		{
 			gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC); //Create vsynced renderer for window
 			if (gRenderer == NULL)
 			{
+				Init = false;
 				std::cout << "Can not create renderer" << std::endl ;
-				success = false;
 			}
 			else
 			{
@@ -101,116 +102,94 @@ bool Init()  //Starts up SDL and creates window
 				int imgFlags = IMG_INIT_PNG; //Initialize PNG loading
 				if (!(IMG_Init(imgFlags) & imgFlags))
 				{
+					Init = false;
 					std::cout << "Can not initialize SDL_image" << std::endl ;
-					success = false;
-				}
-				if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) //Initialize SDL_mixer
-				{
-					std::cout << "SDL_mixer could not initialize!" << std::endl;
-					success = false;
 				}
 				if (TTF_Init() == -1) //Initialize true type font
 				{
-					std::cout << "SDL_ttf could not initialize!" << std::endl;
-					success = false;
+					Init = false;
+					std::cout << "SDL_ttf could not initialize!" << std::endl;					
+				}
+				if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) //Initialize SDL_mixer
+				{
+					Init = false;
+					std::cout << "SDL_mixer could not initialize!" << std::endl;					
 				}
 			}
 		}
 	}
-	return success;
+	return Init;
 }
 
 bool LoadMedia() 
 {
-	bool success = true; //Loading success flag
-    gFont = TTF_OpenFont("font/pixel_font.ttf", 30);  //Open the font
-	if (gFont == NULL)
+	bool LoadMedia = true; //Loading flag
+    
+	gMenuMusic = Mix_LoadMUS("Sound_Music/MainMusic.wav"); //loading the main music
+	if (gMenuMusic == nullptr)
 	{
-			std::cout << "Failed to load font" << std::endl ;
-			success = false;
-	}
-	else
-	{
-		if (!gText1Texture.LoadFromRenderedText("Your journey: ", gFont, textColor, gRenderer)) //Render text
-	    {
-			std::cout << "Failed to render text1 texture" << std::endl;
-		    success = false;
-	    }
-		if (!gText2Texture.LoadFromRenderedText("Your score: ", gFont, textColor, gRenderer)) //Render text
-	    {
-			std::cout << "Failed to render text2 texture" << std::endl;
-		    success = false;
-	    }
-		if (!gText3Texture.LoadFromRenderedText("Your life: ", gFont, textColor, gRenderer)) //Render text
-	    {
-			std::cout << "Failed to render text2 texture" << std::endl;
-		    success = false;
-	    }
+		LoadMedia = false;
+		std::cout << "Can not load menu music" << std::endl;
 	}
 	gMusic = Mix_LoadMUS("Sound_Music/BackgroundMusic.wav"); //loading the background music
 	if (gMusic == nullptr)
 	{
-		std::cout << "Failed to load background music" << std::endl ;
-		success = false;
+		LoadMedia = false;
+		std::cout << "Can not load background music" << std::endl ;
 	}
     gEndMusic = Mix_LoadMUS("Sound_Music/Endgame.wav"); //loading the end game music
 	if (gEndMusic == nullptr)
 	{
-		std::cout << "Failed to load end game music" << std::endl ;
-		success = false;
-	}
-	gMenuMusic = Mix_LoadMUS("Sound_Music/MainMusic.wav"); //loading the main music
-	if (gMenuMusic == nullptr)
-	{
-		std::cout << "Failed to load menu music" << std::endl;
-		success = false;
-	}
-
-	gCongrats = Mix_LoadWAV("Sound_Music/Congratulation.wav"); //loading the sound of congratulation when you receive award
-	if (gCongrats == nullptr)
-	{
-		std::cout << "Failed to load congratulation sound" << std::endl;
-		success = false;
-	}
-	gClick = Mix_LoadWAV("Sound_Music/mouse_click.wav"); //loading the sound of clicking mouse
-	if (gClick == nullptr)
-	{
-		std::cout << "Failed to load mouse click sound" << std::endl;
-		success = false;
-	}
-	gJump = Mix_LoadWAV("Sound_Music/jump_sound.wav"); //loading the sound of jumping
-	if (gJump == nullptr)
-	{
-		std::cout << "Failed to load jumping sound" << std::endl;
-		success = false;
-	}
-	gLose = Mix_LoadWAV("Sound_Music/lose_sound.wav"); //loading the sound when players lose
-	if (gLose == nullptr)
-	{
-		std::cout << "Failed to load lose sound" << std::endl;
-		success = false;
-	}
-	gCollision = Mix_LoadWAV("Sound_Music/collision_sound.wav"); //loading the sound of collision
-	if (gCollision == nullptr)
-	{
-		std::cout << "Failed to load collision sound" << std::endl;
-		success = false;
+		LoadMedia = false;
+		std::cout << "Can not load end game music" << std::endl ;
 	}
 
 	if (!gMenuTexture.LoadFromFile("Image/background/menu.png", gRenderer)) //load menu image (Load sprites)
 	{
-		std::cout << "Failed to load menu image" << std::endl;
-		success = false;
+		LoadMedia = false;
+		std::cout << "Can not load menu image" << std::endl;
 	}
 	if (!gInstructionTexture.LoadFromFile("Image/background/instruction.png", gRenderer)) //load instruction image (Load sprites)
 	{
-		std::cout << "Failed to load instruction image" << std::endl;
-		success = false;
+		LoadMedia = false;
+		std::cout << "Can not load instruction image" << std::endl;
 	}
+
+    gClick = Mix_LoadWAV("Sound_Music/mouse_click.wav"); //loading the sound of clicking mouse
+	if (gClick == nullptr)
+	{
+		LoadMedia = false;
+		std::cout << "Can not load mouse click sound" << std::endl;
+	}
+	gJump = Mix_LoadWAV("Sound_Music/jump_sound.wav"); //loading the sound of jumping
+	if (gJump == nullptr)
+	{
+		LoadMedia = false;
+		std::cout << "Can not load jumping sound" << std::endl;
+	}
+	gCollision = Mix_LoadWAV("Sound_Music/collision_sound.wav"); //loading the sound of collision
+	if (gCollision == nullptr)
+	{
+		LoadMedia = false;
+		std::cout << "Can not load collision sound" << std::endl;
+	}
+	gCongrats = Mix_LoadWAV("Sound_Music/Congratulation.wav"); //loading the sound of congratulation when you receive award
+	if (gCongrats == nullptr)
+	{
+		LoadMedia = false;
+		std::cout << "Can not load congratulation sound" << std::endl;
+	}
+	gLose = Mix_LoadWAV("Sound_Music/lose_sound.wav"); //loading the sound when players lose
+	if (gLose == nullptr)
+	{
+		LoadMedia = false;
+		std::cout << "Can not load lose sound" << std::endl;
+	}
+
 	if (!gPlayButtonTexture.LoadFromFile("Image/button/play_button.png", gRenderer)) //load big play button image (Load sprites)
 	{
-		std::cout << "Failed to load play_button image" << std::endl;
-		success = false;
+		LoadMedia = false;
+		std::cout << "Can not load play button image" << std::endl;
 	}
 	else
 	{
@@ -224,8 +203,8 @@ bool LoadMedia()
 	}
 	if (!gHelpButtonTexture.LoadFromFile("Image/button/help_button.png", gRenderer)) // load help button (Load sprites)
 	{
-		std::cout << "Failed to load help_button image" << std::endl;
-		success = false;
+		LoadMedia = false;
+		std::cout << "Can not load help button image" << std::endl;
 	}
 	else
 	{
@@ -239,8 +218,8 @@ bool LoadMedia()
 	}
 	if (!gBackButtonTexture.LoadFromFile("Image/button/back_button.png", gRenderer))  //load back button (load sprites)
 	{
-		std::cout << "Failed to load back_button image" << std::endl;
-		success = false;
+		LoadMedia = false;
+		std::cout << "Can not load back button image" << std::endl;
 	}
 	else
 	{
@@ -254,8 +233,8 @@ bool LoadMedia()
 	}
 	if (!gExitButtonTexture.LoadFromFile("Image/button/exit_button.png", gRenderer)) //load exit button (load sprites)
 	{
-		std::cout << "Failed to load exit_button image" << std::endl;
-		success = false;
+		LoadMedia = false;
+		std::cout << "Can not load exit button image" << std::endl;
 	}
 	else
 	{
@@ -269,8 +248,8 @@ bool LoadMedia()
 	}
 	if (!gPauseButtonTexture.LoadFromFile("Image/button/pause_button.png", gRenderer)) //load pause button (load sprites)
 	{
-		std::cout << "Failed to load pause_button image " << std::endl;
-		success = false;
+		LoadMedia = false;
+		std::cout << "Can not load pause button image " << std::endl;
 	}
 	else
 	{
@@ -284,8 +263,8 @@ bool LoadMedia()
 	}
 	if (!gContinueButtonTexture.LoadFromFile("Image/button/continue_button.png", gRenderer)) //load continue button (load sprites)
 	{
-		std::cout << "Failed to load continue_button image " << std::endl;
-		success = false;
+		LoadMedia = false;
+		std::cout << "Can not load continue button image " << std::endl;
 	}
 	else
 	{
@@ -297,21 +276,11 @@ bool LoadMedia()
 			gContinueButton[i].h = 34;
 		}
 	}
-	if (!gBackgroundTexture.LoadFromFile("Image/background/layer.png", gRenderer)) //load ground image (load sprites)
-	{
-		std::cout << "Failed to load ground image" << std::endl;
-		success = false;
-	}
 
-	if (!gGroundTexture.LoadFromFile("Image/background/ground.png", gRenderer)) //load ground image (load sprites)
-	{
-		std::cout << "Failed to load ground image" << std::endl;
-		success = false;
-	}
 	if (!gCharacterTexture.LoadFromFile("Image/character/char.png", gRenderer)) //load character image(Load sprite sheet texture)
 	{
-		std::cout << "Failed to load character_run image." << std::endl;
-		success = false;
+		LoadMedia = false;
+		std::cout << "Can not load character running image." << std::endl;
 	}
 	else //Set sprite clips
 	{
@@ -345,16 +314,52 @@ bool LoadMedia()
 		gCharacterClips[5].w = 57;
 		gCharacterClips[5].h = 57;
 	}
+    if (!gBackgroundTexture.LoadFromFile("Image/background/layer.png", gRenderer)) //load ground image (load sprites)
+	{
+		LoadMedia = false;
+		std::cout << "Can not load ground image" << std::endl;
+	}
+
+	if (!gGroundTexture.LoadFromFile("Image/background/ground.png", gRenderer)) //load ground image (load sprites)
+	{
+		LoadMedia = false;
+		std::cout << "Can not load ground image" << std::endl;
+	}
 
 	for(int i = 0 ; i < TOTAL_ENDING ; i++) //load image when player loses (load sprites)
 	{
 		if(!gLoseTexture[i].LoadFromFile(ENDING[i],gRenderer))
 		{
-			std::cout << "Failed to load lose image." << std::endl;
-		    success = false ;
+			LoadMedia = false;
+			std::cout << "Can not load lose image." << std::endl;
 		}
 	}
-	return success;
+
+	gFont = TTF_OpenFont("font/pixel_font.ttf", 30);  //Open the font
+	if (gFont == NULL)
+	{
+		LoadMedia = false;
+		std::cout << "Can not load font" << std::endl ;
+	}
+	else
+	{
+		if (!gText1Texture.LoadFromRenderedText("Your journey: ", gFont, textColor, gRenderer)) //Render text
+	    {
+			LoadMedia = false;
+			std::cout << "Can not render the first texture - journey " << std::endl;
+	    }
+		if (!gText2Texture.LoadFromRenderedText("Your score: ", gFont, textColor, gRenderer)) //Render text
+	    {
+			LoadMedia = false;
+			std::cout << "Can not render the second texture - score" << std::endl;
+	    }
+		if (!gText3Texture.LoadFromRenderedText("Your life: ", gFont, textColor, gRenderer)) //Render text
+	    {
+			LoadMedia = false;
+			std::cout << "Can not render the third texture - life" << std::endl;
+	    }
+	}
+	return LoadMedia;
 }
 
 Close() 
@@ -376,34 +381,30 @@ Close()
 	}
 
 	gText1Texture.Free();
-	gScoreTexture.Free();
 	gText2Texture.Free();
 	gText3Texture.Free();
 	gRoadTexture.Free();
 	gLifeTexture.Free();
+	gScoreTexture.Free();
 
 	Mix_FreeMusic(gMusic); //Free the music
-	gMusic = nullptr;
-
 	Mix_FreeMusic(gEndMusic) ; //Free the music
-	gEndMusic = nullptr ;
-
 	Mix_FreeMusic(gMenuMusic); //Free the music
+
+	gMusic = nullptr;
+	gEndMusic = nullptr ;
 	gMenuMusic = nullptr;
 
 	Mix_FreeChunk(gClick); //Free the sound effect
-	gClick = nullptr;
-
 	Mix_FreeChunk(gLose);  //Free the sound effect
-	gLose = nullptr;
-
 	Mix_FreeChunk(gJump);  //Free the sound effect
-	gJump = nullptr;
-
 	Mix_FreeChunk(gCongrats);  //Free the sound effect
-	gCongrats = nullptr;
-
 	Mix_FreeChunk(gCollision);  //Free the sound effect
+
+	gClick = nullptr;
+	gLose = nullptr;
+	gJump = nullptr;
+	gCongrats = nullptr;
 	gCollision = nullptr;
 
 	SDL_DestroyRenderer(gRenderer); //Destroy window	

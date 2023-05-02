@@ -21,17 +21,17 @@ class Character
 
 	    Character(); //Initializes the variables
 
-	    bool OnGround(); //check whether the character is on ground or not
-
 	    void HandleEvent(SDL_Event& e, Mix_Chunk *gJump); //Takes key presses and adjusts the character's position
 
-	    void Move(); //move the character up and down
+		void Render(SDL_Rect* currentClip, SDL_Renderer *gRenderer, LTexture gCharacterTexture); //Shows the character on the screen
 
-	    void Render(SDL_Rect* currentClip, SDL_Renderer *gRenderer, LTexture gCharacterTexture); //Shows the character on the screen
+	    void Move(); //move the character up and down
 
 	    int GetPosX(); //get the position X of the character
 
 	    int GetPosY(); //get the position Y of the character
+
+		bool IsOnGround(); //check whether the character is on ground or not
 };
 
 #endif 

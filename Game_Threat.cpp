@@ -10,34 +10,34 @@ Threat::Threat(int _type) //Initializes internal variables
 	type = _type;
 	if (type == IN_AIR_THREAT_1) //the bat
 	{
-		posX = rand() % (SCREEN_WIDTH + THREAT_1_RANGE) + SCREEN_WIDTH;
+		posX = rand() % THREAT_1_RANGE + SCREEN_WIDTH;
 		posY = GROUND  ;
 	}
 	else if (type == ON_GROUND_THREAT_1) //the cactus
 	{
-		posX = rand() % (SCREEN_WIDTH + THREAT_2_RANGE) + SCREEN_WIDTH ;
+		posX = rand() % THREAT_2_RANGE + THREAT_2_RANGE + SCREEN_WIDTH ;
 		posY = GROUND - 18;
 	}
-	else if (type == ON_GROUND_THREAT_2) //the stone
+	else if (type == IN_AIR_THREAT_2) //the stone
 	{
-		posX = (rand() % (SCREEN_WIDTH + THREAT_3_RANGE))*5 + SCREEN_WIDTH ;
-		posY = GROUND + 5 ;
+		posX = SCREEN_WIDTH ;
+		posY = 0 ;
 	}
 	ThreatTexture = nullptr;
 }
 
 Threat::~Threat() //Deallocates memory
 {
-	posX = 0;
-	posY = 0;
-	Width = 0;
-	Height = 0;
-	type = 0;
 	if (ThreatTexture != nullptr)
 	{
 		ThreatTexture = nullptr;
 		SDL_DestroyTexture(ThreatTexture) ;
 	}
+	posX = 0;
+	posY = 0;
+	Width = 0;
+	Height = 0;
+	type = -1;
 }
 
 void Threat::LoadFromFile(std::string path, SDL_Renderer* gRenderer) //loading the image of threat at specified path
@@ -66,32 +66,34 @@ void Threat::LoadFromFile(std::string path, SDL_Renderer* gRenderer) //loading t
 	ThreatTexture = newTexture; //return success
 }
 
-void Threat::Move(const int &acceleration , int type) //get the speed of game threat
+void Threat::Move(int &acceleration , int type) //get the speed of game threat
 {
-	if(type == ON_GROUND_THREAT_2 || type == ON_GROUND_THREAT_1)
+	if(type == ON_GROUND_THREAT_1)
 	{
 		posX += -(THREAT_SPEED + acceleration); //update position x
+		if (posX + MAX_THREAT_WIDTH < 0) //when the threat touches the screen to the left
+	    {
+			posX = rand() % THREAT_2_RANGE + SCREEN_WIDTH*2 ;
+		    posY = GROUND - 18;
+		}
 	}
 	else if(type == IN_AIR_THREAT_1)
 	{
-		posX += -(THREAT_SPEED + acceleration*2); //update position x
+		posX += -(THREAT_SPEED + acceleration + 3); //update position x
+		if (posX + MAX_THREAT_WIDTH < 0) //when the threat touches the screen to the left
+		{
+			posX = rand() % THREAT_1_RANGE + SCREEN_WIDTH*2;
+		    posY = GROUND  ;
+		}
 	}
-	if (posX + MAX_THREAT_WIDTH < 0) //when the threat touches the screen to the left
+	else if(type == IN_AIR_THREAT_2)
 	{
-		if(type == IN_AIR_THREAT_1)
+		posY += (THREAT_SPEED + acceleration); //update position x
+		posX += -(THREAT_SPEED*2 + acceleration);
+		if(posY > SCREEN_HEIGHT || posX < 0) //when the threat touches the screen to the left or at the bottom
 		{
-			posX = rand() % (SCREEN_WIDTH + THREAT_1_RANGE) + SCREEN_WIDTH;
-			posY = GROUND ;
-		}
-		else if (type == ON_GROUND_THREAT_1)
-		{
-			posX = rand() % (SCREEN_WIDTH + THREAT_2_RANGE) + SCREEN_WIDTH ;
-			posY = GROUND - 18;
-		}
-		else if (type == ON_GROUND_THREAT_2)
-		{
-			posX = (rand() % (SCREEN_WIDTH + THREAT_3_RANGE))*5 + SCREEN_WIDTH ;
-		    posY = GROUND + 5 ;
+			posX = SCREEN_WIDTH ;
+		    posY = 0 ;
 		}
 	}
 }
@@ -119,11 +121,11 @@ int Threat::GetType() //get the type of threat
 	}
 	else
 	{
-		return ON_GROUND_THREAT_2 ;
+		return IN_AIR_THREAT_2 ;
 	}
 }
 
-int Threat::GetSpeed(const int &acceleration) //get the speed of game threat
+int Threat::GetSpeed(int &acceleration) //get the speed of game threat
 {
 	return THREAT_SPEED + acceleration;
 }

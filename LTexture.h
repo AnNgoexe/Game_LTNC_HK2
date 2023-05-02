@@ -14,10 +14,10 @@
 const int SCREEN_WIDTH = 928;
 const int SCREEN_HEIGHT = 522;
 
-#define TIME_MAX 2000
+#define TIME_MAX 1500
 #define GROUND_SPEED 5
 #define BASE_OFFSET_SPEED 0
-#define BACKGROUND_SPEED 3
+#define BACKGROUND_SPEED 5
 #define GROUND 430
 #define TOTAL_ENDING 5
 
@@ -37,12 +37,13 @@ const int TEXT2_POSY = 15;
 const int SCORE_POSX = 240;
 const int SCORE_POSY = 15;
 
-const int TEXT3_POSX = 700;
+const int TEXT3_POSX = 650;
 const int TEXT3_POSY = 15;
-const int LIFE_POSX = 830;
+const int LIFE_POSX = 750;
 const int LIFE_POSY = 15;
+const int LIFE_DISTANCE = 35 ;
 
-const int acceleration = 1 ;
+const int ACCELERATION = 1 ;
 const int CHARACTER_RUNNING_FRAMES = 6;
 const int THREAT_FLYING_FRAMES = 5;
 const int AWARD_ROTATING_FRAMES = 8;
@@ -54,11 +55,11 @@ class LTexture //texture wrapper class
 {
 	private:
 
-	    SDL_Texture* mTexture; //The actual hardware texture
+	    SDL_Texture* Texture; //The actual hardware texture
 
-	    int mWidth; //Image dimensions (width)
+	    int Width; //Image dimensions (width)
 
-	    int mHeight; //Image dimensions (height)
+	    int Height; //Image dimensions (height)
 
     public:
 

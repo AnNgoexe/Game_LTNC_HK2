@@ -1,11 +1,20 @@
 #include "Game_Logic.h"
 
-//increase the speed and score of the character depending on time
-void Update_Speed_Road (int& time,int& speed,int& road) 
+//increase the speed and road of the character depending on time
+void Update_Speed_Road(int& time,int& speed,int& road) 
 {
-	if (time == TIME_MAX) speed = speed + acceleration ;
-	if (time > TIME_MAX) time = 0 ;
-	if (time % 5 == 0) road++ ;
+	if (time == TIME_MAX*2/3) 
+	{
+		speed = speed + ACCELERATION ;
+	}
+	if (time > TIME_MAX) 
+	{
+		time = 0 ;
+	}
+	if (time % 5 == 0) 
+	{
+		road++ ;
+	}
 	time++ ;
 }
 
@@ -14,12 +23,12 @@ void Generate_Threat(Threat& threat1, Threat& threat2, Threat& threat3, SDL_Rect
 {
 	threat1.LoadFromFile("Image/threat/bat.png", gRenderer); //bat - animation
 	{
-		gThreatClips[0].x = 43 * 3;
+		gThreatClips[0].x = 43 * 0;
 		gThreatClips[0].y = 0;
 		gThreatClips[0].w = 43;
 		gThreatClips[0].h = 30;
 
-		gThreatClips[1].x = 43 * 4;
+		gThreatClips[1].x = 43 * 1;
 		gThreatClips[1].y = 0;
 		gThreatClips[1].w = 43;
 		gThreatClips[1].h = 30;
@@ -29,12 +38,12 @@ void Generate_Threat(Threat& threat1, Threat& threat2, Threat& threat3, SDL_Rect
 		gThreatClips[2].w = 43;
 		gThreatClips[2].h = 30;
 
-		gThreatClips[3].x = 43;
+		gThreatClips[3].x = 43 * 3;
 		gThreatClips[3].y = 0;
 		gThreatClips[3].w = 43;
 		gThreatClips[3].h = 30;
 
-		gThreatClips[4].x = 0;
+		gThreatClips[4].x = 43 * 4;
 		gThreatClips[4].y = 0;
 		gThreatClips[4].w = 43;
 		gThreatClips[4].h = 30;
@@ -44,14 +53,14 @@ void Generate_Threat(Threat& threat1, Threat& threat2, Threat& threat3, SDL_Rect
 }
 
 //check whether there is a collision between character and game threat
-bool Check_Colission(int& life, Character character,SDL_Rect* character_clip, Threat threat, SDL_Rect* threat_clip) 
+bool Check_Colission_Threat(int& life, Character character,SDL_Rect* character_clip, Threat threat, SDL_Rect* threat_clip) 
 {
     bool collide = false;
 	
 	int leftA = character.GetPosX();   //position of the character
 	int rightA = character.GetPosX() + character_clip->w;
-	int topA = character.GetPosY();
-	int bottomA = character.GetPosY() + character_clip->h;
+	int topA = character.GetPosY() + 10;
+	int bottomA = character.GetPosY() + character_clip->h - 10;
 
 	if (threat.GetType() == ON_GROUND_THREAT_1) //collide with the cactus
 	{
@@ -69,7 +78,7 @@ bool Check_Colission(int& life, Character character,SDL_Rect* character_clip, Th
 			}
 		}
 	}
-	else if (threat.GetType() == ON_GROUND_THREAT_2) //collide with the stone
+	else if (threat.GetType() == IN_AIR_THREAT_2) //collide with the stone
 	{
 		int leftC = threat.GetPosX();
 		int rightC = threat.GetPosX() + threat_clip->w;
@@ -90,7 +99,7 @@ bool Check_Colission(int& life, Character character,SDL_Rect* character_clip, Th
 		int leftD = threat.GetPosX() + 35 ;
 		int rightD = threat.GetPosX() + threat_clip->w - 35 ;
 		int topD = threat.GetPosY() ;
-		int bottomD = threat.GetPosY() + threat_clip->h - 15;
+		int bottomD = threat.GetPosY() + threat_clip->h - 12;
 
 		if (rightA >= leftD && leftA <= rightD) 
 		{
@@ -104,25 +113,42 @@ bool Check_Colission(int& life, Character character,SDL_Rect* character_clip, Th
 	return collide; //return the result whether collision happens
 }
 
-//Update and show player's road, score and life on the screen
+//Update and show player's life, score and journey on the screen
 void Draw_Player_Result(LTexture gRoadTexture, LTexture gScoreTexture, LTexture gLifeTexture, SDL_Color textColor, SDL_Renderer *gRenderer, TTF_Font *gFont, int& road, int& score, int& life) 
 {
-	if (gRoadTexture.LoadFromRenderedText(std::to_string(road), gFont, textColor, gRenderer))
+	if(gRoadTexture.LoadFromRenderedText(std::to_string(road), gFont, textColor, gRenderer))
 	{
 		gRoadTexture.Render(ROAD_POSX, ROAD_POSY, gRenderer);
 	}
-	if (gScoreTexture.LoadFromRenderedText(std::to_string(score), gFont, textColor, gRenderer))
+	else
+	{
+		std::cout << "Can not render text(road)" << std::endl ;
+	}
+
+	if(gScoreTexture.LoadFromRenderedText(std::to_string(score), gFont, textColor, gRenderer))
 	{
 		gScoreTexture.Render(SCORE_POSX, SCORE_POSY, gRenderer);
 	}
-	if (gLifeTexture.LoadFromRenderedText(std::to_string(life), gFont, textColor, gRenderer))
+	else
 	{
-		gLifeTexture.Render(LIFE_POSX, LIFE_POSY, gRenderer);
+		std::cout << "Can not render text(score)" << std::endl ;
+	}
+
+    if(gLifeTexture.LoadFromFile("Image/background/life.png", gRenderer))
+	{
+		for(int i = 1 ; i <= life ; i++)
+		{
+			gLifeTexture.Render(LIFE_POSX + LIFE_DISTANCE*i, LIFE_POSY, gRenderer);
+		}
+	}
+    else
+	{
+		std::cout << "Can not render life image" << std::endl ;
 	}
 }
 
 //choose whether the player wants to play again or not
-void DrawEndGameSelection(LTexture gLoseTexture, SDL_Event e, SDL_Renderer *gRenderer, bool &Play_Again)
+void Draw_EndGame_Selection(LTexture gLoseTexture, SDL_Event e, SDL_Renderer *gRenderer, bool &Play_Again)
 {
 	if (Play_Again) //status of checking playing again
 	{
@@ -157,8 +183,8 @@ void DrawEndGameSelection(LTexture gLoseTexture, SDL_Event e, SDL_Renderer *gRen
 	}
 }
 
-//generate award
-void GenerateAward(Award &award1, Award &award2, Award &award3, SDL_Rect gAwardClips[AWARD_ROTATING_FRAMES], SDL_Renderer *gRenderer)
+//generate game award
+void Generate_Award(Award &award1, Award &award2, Award &award3, SDL_Rect gAwardClips[AWARD_ROTATING_FRAMES], SDL_Renderer *gRenderer)
 {
 	award1.LoadFromFile("Image/award/coin.png", gRenderer); //coin image
 	award2.LoadFromFile("Image/award/diamond.png", gRenderer); //diamond- animation
@@ -207,7 +233,7 @@ void GenerateAward(Award &award1, Award &award2, Award &award3, SDL_Rect gAwardC
 }
 
 //check whether the character receives awards
-bool CheckReceive(int& score, int& life, Mix_Chunk *gCongrats, Character character, SDL_Rect* character_clip, Award award, SDL_Rect* award_clip)
+bool Check_Receive_Award(int& score, int& life, Mix_Chunk *gCongrats, Character character, SDL_Rect* character_clip, Award award, SDL_Rect* award_clip)
 {
 	bool receive = false;
 	
@@ -262,7 +288,10 @@ bool CheckReceive(int& score, int& life, Mix_Chunk *gCongrats, Character charact
 			if(( topA <= bottomD && topA >= topD ) || ( bottomA <= bottomD && bottomA >= topD ))
 			{
 				receive = true ;
-				if(life<2) life++ ;
+				if(life<3) 
+				{
+					life++ ;
+				}
 				Mix_PlayChannel(-1,gCongrats,0) ;
 			}
 		}
