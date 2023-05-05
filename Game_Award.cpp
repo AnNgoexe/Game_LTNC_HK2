@@ -22,7 +22,7 @@ Award::Award(int _type) //Initializes internal variables
 	}
 	else if (type == AWARD_3) //the heart
 	{
-		X = AWARD_3_RANGE + SCREEN_WIDTH ;
+		X = AWARD_3_RANGE/2 + SCREEN_WIDTH ;
 		Y = GROUND - 180;
 	}
 	AwardTexture = nullptr;
@@ -85,7 +85,7 @@ void Award::Move(int &acceleration , int type) //get the speed of game award
 	{
 		if(type == AWARD_3)
 		{
-			X = AWARD_3_RANGE + SCREEN_WIDTH ;
+			X = AWARD_3_RANGE/2 + SCREEN_WIDTH ;
 		    Y = GROUND - 180;
 		}
 		else if (type == AWARD_1)
