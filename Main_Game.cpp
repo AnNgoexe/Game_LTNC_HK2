@@ -178,7 +178,7 @@ int main(int argc, char* argv[])
 						}
 						if (Check_Colission_Threat(life, character,currentClip_Character,threat3,currentClip_Threat)) //check collision
 						{
-							time = TIME_DISTANCE ;
+							time = 0 ;
 							Mix_PauseMusic();
 							if(life!=0)
 							{
